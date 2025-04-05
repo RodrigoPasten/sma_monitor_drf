@@ -32,18 +32,26 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #librerias
     'rest_framework',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'django_filters',
+    'drf_yasg',
+    'corsheaders',
 
 
 
+#aplicaciones (Revisar si todas son necesarias)
     'apps.api',
-    'apps.auditoria',
+    'apps.auditorias',
     'apps.medidas',
     'apps.notificaciones',
     'apps.organismos',
@@ -61,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.usuarios.middleware.HistorialAccesoMiddleware',
+    'apps.api.middleware.APILoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'ppda_core.urls'
@@ -90,14 +100,13 @@ WSGI_APPLICATION = 'ppda_core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sma_db',
-        'USER': 'postgres',
-        'PASSWORD': 'pgadmin',
+        'NAME': 'plan_descontaminacion',
+        'USER': 'django_user',
+        'PASSWORD': 'password123',
         'HOST': 'localhost',
-        'PORT': '5432'
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -118,8 +127,56 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Configuración de drf-spectacular
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Plan de Descontaminación',
+    'DESCRIPTION': 'API para el sistema de monitoreo del Plan de Descontaminación',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'displayOperationId': True,
+        'persistAuthorization': True,
+    }
+}
 
 
+URL_SCHEMA = '/api/schema/'
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "SMA Monitor",
+    "site_header": "Panel Administrador Monitor SMA",
+    "site_brand": "SMA",
+    "site_logo": "images/logo_ppda.png",
+    "custom_css": "css/logo_admin.css",
+    "welcome_sign": "Bienvenido al Panel de Administración del Monitor SMA",
+    "topmenu_links": [
+        {"name": "Inicio", "url": "/admin", "permissions": ["auth.view_user"]},
+        {"name": "Documentación", "url": "https://www.djangoproject.com/", "new_window": True},
+    ],
+
+    "user_avatar": "path_to_avatar.png",
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -136,8 +193,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Asegúrate de que tu carpeta 'static' esté aquí
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
