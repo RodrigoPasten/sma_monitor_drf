@@ -102,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'plan_descontaminacion',
         'USER': 'django_user',
-        'PASSWORD': 'password123',  # La contraseña que usaste arriba
+        'PASSWORD': 'password123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -164,16 +164,18 @@ URL_SCHEMA = '/api/schema/'
 
 
 JAZZMIN_SETTINGS = {
-    "site_title": "Mi Proyecto",
-    "site_header": "Administración de Mi Proyecto",
-    "site_brand": "Mi Proyecto",
-    "site_logo": "/path_to_logo.png",
-    "welcome_sign": "Bienvenido al Panel de Administración",
+    "site_title": "SMA Monitor",
+    "site_header": "Panel Administrador Monitor SMA",
+    "site_brand": "SMA",
+    "site_logo": "images/logo_ppda.png",
+    "custom_css": "css/logo_admin.css",
+    "welcome_sign": "Bienvenido al Panel de Administración del Monitor SMA",
     "topmenu_links": [
         {"name": "Inicio", "url": "/admin", "permissions": ["auth.view_user"]},
         {"name": "Documentación", "url": "https://www.djangoproject.com/", "new_window": True},
     ],
-    "user_avatar": "path_to_avatar.png",  # Si quieres que los usuarios tengan una imagen de avatar
+
+    "user_avatar": "path_to_avatar.png",
 }
 
 # Internationalization
@@ -191,8 +193,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Asegúrate de que tu carpeta 'static' esté aquí
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
